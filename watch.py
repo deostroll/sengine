@@ -45,7 +45,7 @@ def run_tests():
     '''
     print >> sys.stderr, "Running unit tests at %s" % get_now()
     os.chdir(BASEDIR)
-    subprocess.call(r'python -m unittest discover -s tests -b', shell=True)
+    subprocess.call(r'python -m unittest discover -s tests -p "*_tests.py"', shell=True)
 
 def getext(filename):
     '''
