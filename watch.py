@@ -26,18 +26,18 @@ def get_now():
     '''
     return datetime.datetime.now().strftime("%Y/%m/%d %H:%M:%S")
 
-def build_docs():
-    '''
-    Run the Sphinx build (`make html`) to make sure we have the
-    latest version of the docs
-
-    Use `call` here so that we don't detect file changes while this
-    is running...
-    '''
-
-    print >> sys.stderr, "Building docs at %s" % get_now()
-    os.chdir(os.path.join(BASEDIR, "docs"))
-    subprocess.call(r'make.bat html')
+# def build_docs():
+#     '''
+#     Run the Sphinx build (`make html`) to make sure we have the
+#     latest version of the docs
+#
+#     Use `call` here so that we don't detect file changes while this
+#     is running...
+#     '''
+#
+#     print >> sys.stderr, "Building docs at %s" % get_now()
+#     os.chdir(os.path.join(BASEDIR, "docs"))
+#     subprocess.call(r'make.bat html')
 
 def run_tests():
     '''
@@ -47,12 +47,12 @@ def run_tests():
     os.chdir(BASEDIR)
     subprocess.call(r'python -m unittest discover -s tests -b', shell=True)
 
-# def getext(filename):
-#     '''
-#     Get the file extension.
-#     '''
-#
-#     return os.path.splitext(filename)[-1].lower()
+def getext(filename):
+    '''
+    Get the file extension.
+    '''
+
+    return os.path.splitext(filename)[-1].lower()
 
 class ChangeHandler(FileSystemEventHandler):
     '''
