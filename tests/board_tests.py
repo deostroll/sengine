@@ -68,3 +68,7 @@ class BoardTests(TestCase):
         test = testWrap(self, func)
 
         test(tiles, None, False)
+
+        c = board.getCell((7,6))
+
+        self.assertFalse(c.hasBonus(), "has bonus")

@@ -1,9 +1,27 @@
+import json
 
 class Board:
     def __init__(self, size):
-        self.cells = map(lambda x: Cell(x), range(size * size))
-        self.virtual_cells = range(size * size)
+
+        f = open('data/tiles.json')
+        tiles = json.load(f)
         self.size = size
+
+        def createCell(x):
+            c = Cell(x)
+            x, y = self._get2d(x)
+            sx = str(x)
+            sy = str(y)
+            try:
+                b = tiles[sx][sy]
+                c.bonus = b['type']
+            except KeyError:
+                pass
+            return c
+
+        self.cells = map(createCell, range(size * size))
+        self.virtual_cells = range(size * size)
+
 
     def __len__(self):
         return len(self.cells)
