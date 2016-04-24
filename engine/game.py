@@ -67,10 +67,27 @@ class Game:
                 'msg' : 'Invalid tile'
             }
 
+        # TODO: add implementation of adding to board here
+        
         self._utilized.append(self.player.rack.tiles[idx])
         del self.player.rack.tiles[idx]
 
         return {
             'result' : True,
             'msg' : 'Accepted'
+        }
+
+    def setOrientation(self, orientation):
+        self.orientation = orientation
+
+    def setPosition(self, pos):
+        self.position = pos
+
+    def playWord(self, word):
+        assert self.orientation is not None
+        assert self.position is not None
+
+        return {
+            'result' : True,
+            'msg' : "Ok"
         }
