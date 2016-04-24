@@ -88,3 +88,16 @@ class Rack:
 
     def __repr__(self):
         return ''.join(map(lambda x: x.letter, self.tiles))
+
+    def find(self, ch):
+        res = -1
+        for idx in range(len(self.tiles)):
+            if self.tiles[idx].letter == ch:
+                res = idx
+                break
+        return res
+
+class Player:
+    def __init__(self, name, rack):
+        self.name = name
+        self.rack = rack

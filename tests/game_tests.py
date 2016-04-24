@@ -32,7 +32,7 @@ class GamePlayTests(TestCase):
         assert tile == result
 
     def test_rack(self):
-        game = Game()
+        game = Game(self.board)
         game.loadTiles()
         rack = Rack(7)
         total = len(game.tiles)
@@ -41,8 +41,22 @@ class GamePlayTests(TestCase):
         assert len(rack.tiles) == 7
         assert total - 7 == len(game.tiles)
 
-    def test_placement(self):
-        # testing if tiles placed on board
-        # conforms to word
+    def test_player_rack(self):
+        rack = Rack(7)
+        game = Game(self.board)
+        player = Player('Player 1', rack)
+        game.fillRack(player.rack, 'xcwaaei')
+        game.setPlayer(player)
 
-        board = self.board
+        #place a tile not in rack
+        #should error
+        result = game.playLetter('k')
+
+        self.assertTrue(result['result'] == False, 'letter cannot be played')
+
+        #player rack tiles would have not reduced
+        assert len(player.rack.tiles) == 7
+
+        result = game.playLetter('c')
+        self.assertTrue(result['result'])
+        assert len(player.rack.tiles) == 6
