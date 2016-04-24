@@ -3,7 +3,7 @@ import json
 class Board:
     def __init__(self, size):
 
-        f = open('data/tiles.json')
+        f = open('data/bonus.json')
         tiles = json.load(f)
         self.size = size
 
@@ -21,7 +21,7 @@ class Board:
 
         self.cells = map(createCell, range(size * size))
         self.virtual_cells = range(size * size)
-
+        self._place = {}
 
     def __len__(self):
         return len(self.cells)
@@ -47,11 +47,36 @@ class Board:
         else:
             raise ValueError('Invalid argument passed into getCell call')
 
+    def put(self, pos, tile):
+        self._place[pos] = tile
+
+    def getTile(self, pos):
+        cell = self.getCell(pos)
+        if cell.tile is None:
+            if len(self._place) > 0:
+                if type(pos) is tuple:
+                    pos = self._getIndex(pos)
+                return self._place[pos]
+            else:
+                return None
+
+        return None
+
+
 class Cell:
     def __init__(self, index):
         self.id = index
         self.value = ''
         self.bonus = ''
+        self.tile = None
 
     def hasBonus(self):
         return self.bonus != ''
+
+    def setTile(tile):
+        self.tile = tile
+
+class Tile:
+    def __init__(self, letter, score):
+        self.letter = letter
+        self.score = score

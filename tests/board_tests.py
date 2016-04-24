@@ -53,7 +53,7 @@ class BoardTests(TestCase):
     def test_bonus(self):
         board = Board(15)
         import json
-        f = open('data/tiles.json')
+        f = open('data/bonus.json')
         tiles = json.load(f)
 
         assert tiles is not None
