@@ -30,3 +30,13 @@ class GamePlayTests(TestCase):
 
         result = board.getTile(112)
         assert tile == result
+
+    def test_rack(self):
+        game = Game()
+        game.loadTiles()
+        rack = Rack(7)
+        total = len(game.tiles)
+        game.fillRack(rack)
+        # pdb.set_trace()
+        assert len(rack.tiles) == 7
+        assert total - 7 == len(game.tiles)

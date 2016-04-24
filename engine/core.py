@@ -80,3 +80,11 @@ class Tile:
     def __init__(self, letter, score):
         self.letter = letter
         self.score = score
+
+class Rack:
+    def __init__(self, size):
+        self.size = size
+        self.tiles = []
+
+    def __repr__(self):
+        return ''.join(map(lambda x: x.letter, self.tiles))
