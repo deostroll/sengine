@@ -60,3 +60,5 @@ class GamePlayTests(TestCase):
         result = game.playLetter('c')
         self.assertTrue(result['result'])
         assert len(player.rack.tiles) == 6
+
+    
