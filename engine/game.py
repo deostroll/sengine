@@ -12,11 +12,16 @@ def loadTiles():
         for x in range(f):
             tileArr.append(Tile(l, score))
 
-    return tileArr
+    return {
+        'tiles': tileArr,
+        'letter_score': tiles['scores']
+    }
 
 class Game:
     def  loadTiles(self):
-        self.tiles = loadTiles()
+        res = loadTiles()
+        self.tiles = res['tiles']
+        self.letter_scores = res['letter_score']
 
     def fillRack(self, rack):
         existing = len(rack.tiles)

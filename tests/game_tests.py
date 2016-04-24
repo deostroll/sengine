@@ -18,7 +18,7 @@ class GamePlayTests(TestCase):
         self.board = Board(15)
 
     def test_tile_load(self):
-        tiles = loadTiles()
+        tiles = loadTiles()['tiles']
         assert tiles is not None
         assert len(tiles) == 100
 
@@ -40,3 +40,9 @@ class GamePlayTests(TestCase):
         # pdb.set_trace()
         assert len(rack.tiles) == 7
         assert total - 7 == len(game.tiles)
+
+    def test_placement(self):
+        # testing if tiles placed on board
+        # conforms to word
+
+        board = self.board
