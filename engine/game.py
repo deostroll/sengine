@@ -23,6 +23,7 @@ class Game:
     def __init__(self, board):
         self.board = board
         self.loadTiles()
+        self.isFirstTurn = True
 
     def  loadTiles(self):
         res = loadTiles()
@@ -70,8 +71,6 @@ class Game:
                 'msg' : 'Invalid tile:' + ch
             }
 
-        # TODO: add implementation of adding to board here
-
         pos = self.position
         if pos[0] < self.board.size and pos[1] < self.board.size:
 
@@ -84,9 +83,12 @@ class Game:
                 }
             self._utilized.append((self.player.rack.tiles[idx], pos))
             if self.orientation == 'horizontal':
-                self.position = (pos[0] + 1, pos[1])
+                self.position = (pos[0], pos[1] + 1)
+                # #if this cell has some tile increment it
+                # if self.board.getCell(self.position).hasTile():
+                #     self.position = (self.position[0], self.position[1] + 1)
             else:
-                self.posotion = (pos[0], pos[1] + 1)
+                self.position = (pos[0] + 1, pos[1])
         else:
             return {
                 'result': False,
@@ -115,22 +117,14 @@ class Game:
             if res['result'] == False:
                 return res
 
-        #todo check for connection
+
 
         return {
             'result' : True,
             'msg' : 'Accepted'
         }
 
-    def isValid(self):
-        #clone virtual cells
-        vcells = list(self.board.virtual_cells)
-        uf = WUF(vcells)
-
-
-        for i in range(1, len(self._utilized)):
-            pass
-    def joinNeighbours(self, pos):
+    def joinNeighbours(self, pos, vcells):
         nodes = []
         size = self.board.size
 
@@ -184,6 +178,62 @@ class Game:
             nodes.append((pos[0], pos[1] - 1)) #top
             # nodes.append((pos[0], pos[1] + 1)) #bottom
 
-        nodes = map(lambda x: self.board._getIndex(x), nodes)
-
+        # nodes = map(lambda x: self.board._getIndex(x), nodes)
+        #
         s = self.board._getIndex(pos)
+        # vcells = list(self.board.virtual_cells)
+        uf = WUF(vcells)
+        # for idx in nodes:
+        #     if self.board.getCell(idx).hasTile():
+        #         uf.join(s, idx);
+        #
+        # self._ucells = vcells
+
+        for n in nodes:
+            cell = self.board.getCell(n);
+            if cell.hasTile():
+                uf.join(s, cell.id)
+
+
+        # return uf
+
+    def endTurn(self):
+        midCellIndex = self.board.size** 2 / 2
+        def _sort_(a):
+            if self.orientation == 'horizontal':
+                return a[1]
+            else:
+                return a[0]
+
+        #sort our placed array
+        sorted(self._utilized, key=_sort_)
+        vcells = list(self.board.virtual_cells)
+        for item in self._utilized:
+            self.joinNeighbours(item[1], vcells)
+        uf = WUF(vcells)
+
+        for i in range(1, len(self._utilized)):
+            prev = self._utilized[i - 1]
+            curr = self._utilized[i]
+            pidx = self.board._getIndex(prev[1])
+            cidx = self.board._getIndex(curr[1])
+            uf.join(pidx, cidx)
+
+        #first index pos of placed word
+        _ , p = self._utilized[0]
+
+        idx = self.board._getIndex(p)
+        if self.isFirstTurn:
+            if uf.isConnected(idx, midCellIndex) == False:
+                return { 'result' : False, 'msg' : 'Must place first word to pass through the star tile' }
+
+            # TODO: Must commit and compute score here
+
+            self.isFirstTurn = False
+            return { 'result' : True, 'msg': 'Accepted' }
+        else:
+            if uf.isConnected(idx, midCellIndex) == False:
+                return { 'result': 'False', 'msg' : 'Placed word isn\'t connected to game on board'}
+
+    def compute(self):
+        pass

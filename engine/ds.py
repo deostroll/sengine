@@ -10,11 +10,11 @@ class WUF:
             i = id[i]
         return i
 
-    def isConneced(self, p, q):
+    def isConnected(self, p, q):
         return self.root(p) == self.root(q)
 
     def join(self, p, q):
-        if self.isConneced(p, q):
+        if self.isConnected(p, q):
             return
 
         rp = self.root(p)
