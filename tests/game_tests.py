@@ -47,7 +47,7 @@ class GamePlayTests(TestCase):
         player = Player('Player 1', rack)
         game.fillRack(player.rack, 'xcwaaei')
         game.setPlayer(player)
-
+        game.setPosition((7,7))
         #place a tile not in rack
         #should error
         result = game.playLetter('k')
@@ -60,5 +60,3 @@ class GamePlayTests(TestCase):
         result = game.playLetter('c')
         self.assertTrue(result['result'])
         assert len(player.rack.tiles) == 6
-
-    

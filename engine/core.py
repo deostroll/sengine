@@ -76,6 +76,9 @@ class Cell:
     def setTile(tile):
         self.tile = tile
 
+    def hasTile(self):
+        return self.tile is not None
+
 class Tile:
     def __init__(self, letter, score):
         self.letter = letter
