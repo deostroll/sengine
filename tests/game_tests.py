@@ -48,6 +48,7 @@ class GamePlayTests(TestCase):
         game.fillRack(player.rack, 'xcwaaei')
         game.setPlayer(player)
         game.setPosition((7,7))
+        game.setOrientation('horizontal')
         #place a tile not in rack
         #should error
         result = game.playLetter('k')
