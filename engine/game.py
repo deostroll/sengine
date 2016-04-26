@@ -46,6 +46,9 @@ class Game:
                 tiles.append(tile)
                 self.tiles.remove(tile)
             rack.tiles.extend(tiles)
+
+            # TODO: write code for case when the default < remaining
+
             return
 
         existing = len(rack.tiles)
@@ -77,10 +80,17 @@ class Game:
         idx = self.player.rack.find(ch)
 
         if idx == -1:
-            return {
-                'result' : False,
-                'msg' : 'Invalid tile:' + ch
-            }
+            # check for blank tile
+            idx = self.player.rack.find('_')
+            if idx == -1:
+                return {
+                    'result' : False,
+                    'msg' : 'Invalid tile:' + ch
+                }
+            else:
+                #set the blank tile
+                tile = self.player.rack.tiles[idx]
+                tile.setSubstituteLetter(ch)
 
         pos = self.position
         if pos[0] < self.board.size and pos[1] < self.board.size:
@@ -106,7 +116,7 @@ class Game:
                 'msg': 'Cannot accept letter: ' + ch + '. Row/column at its end'
             }
 
-
+        # remove tile from rack at that index
         del self.player.rack.tiles[idx]
 
         return {
@@ -222,7 +232,7 @@ class Game:
         for item in self._utilized:
             self.joinNeighbours(item[1], vcells)
         uf = WUF(vcells)
-
+        # join the entered
         for i in range(1, len(self._utilized)):
             prev = self._utilized[i - 1]
             curr = self._utilized[i]
@@ -234,17 +244,77 @@ class Game:
         _ , p = self._utilized[0]
 
         idx = self.board._getIndex(p)
-        if self.isFirstTurn:
-            if uf.isConnected(idx, midCellIndex) == False:
+        # if self.isFirstTurn:
+        #     if uf.isConnected(idx, midCellIndex) == False:
+        #         return { 'result' : False, 'msg' : 'Must place first word to pass through the star tile' }
+        #
+        #     # TODO: Must commit and compute score here
+        #
+        #     #TODO: Fill rack
+        #
+        #     self.isFirstTurn = False
+        #     return { 'result' : True, 'msg': 'Accepted' }
+        # else:
+        #     if uf.isConnected(idx, midCellIndex) == False:
+        #         return { 'result': 'False', 'msg' : 'Placed word isn\'t connected to game on board'}
+
+        if uf.isConnected(idx, midCellIndex) == False:
+            if self.isFirstTurn:
                 return { 'result' : False, 'msg' : 'Must place first word to pass through the star tile' }
+            else:
+                return { 'result' : False, 'msg' : 'Word placed must be connected words played on board' }
 
-            # TODO: Must commit and compute score here
 
-            self.isFirstTurn = False
-            return { 'result' : True, 'msg': 'Accepted' }
-        else:
-            if uf.isConnected(idx, midCellIndex) == False:
-                return { 'result': 'False', 'msg' : 'Placed word isn\'t connected to game on board'}
 
-    def compute(self):
-        pass
+    def getCurrentScore(self):
+
+        assert self.orientation is not None
+
+        # 1. Check if all letters put
+        #    belong to one row or column
+        # 2. identify gap. Check gap with
+        #    board
+        # 3. retrieve all words (horizontal and vertical)
+        # 4. compute score
+
+
+        #clone utilized queue
+        utilized = self._utilized[:]
+
+        # sort it
+        def _sort_(a):
+            if self.orientation == 'horizontal':
+                return a[1]
+            else:
+                return a[0]
+
+        sorted(utilized, key=_sort_)
+        vcells = self.board.virtual_cells[:]
+
+        for item in utilized:
+            self.joinNeighbours(item[1], vcells)
+
+        uf = WUF(vcells)
+
+        for i in range(1, len(utilized)):
+            prev = utilized[i - 1]
+            curr = utilized[i]
+            pidx = self.board._getIndex(prev[1])
+            cidx = self.board._getIndex(curr[1])
+            uf.join(pidx, cidx)
+
+        _, p = utilized[0]
+
+        #check if in sequence
+        length = len(utilized)
+
+        for x in utilized:
+            pos = utilized[1]
+
+        idx = self.board._getIndex(p)
+        midCellIndex = self.board.size** 2 / 2
+
+        if uf.isConnected(idx, midCellIndex) == False:
+            raise Exception('Not connected') if not self.isFirstTurn else Exception('Not correctly placed for first turn')
+
+        #now lets compute this

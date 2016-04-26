@@ -86,6 +86,15 @@ class Tile:
     def __repr__(self):
         return self.letter
 
+    def isBlank(self):
+        return self.letter == '_'
+
+    def setSubstituteLetter(self, letter):
+        self.sub_letter = letter
+
+    def clearSubstituteLetter(self):
+        del self.sub_letter
+
 class Rack:
     def __init__(self, size):
         self.size = size
