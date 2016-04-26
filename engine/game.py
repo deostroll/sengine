@@ -33,8 +33,19 @@ class Game:
     def fillRack(self, rack, default=None):
 
         if default is not None:
-            tiles = map(lambda x: Tile(x, self.letter_scores[x]) , list(default))
-            rack.tiles = tiles
+
+            existing = len(rack.tiles)
+            remaining = rack.size - existing
+            default = list(default[:remaining])
+            tiles = []
+            for ch in default:
+
+                #this itself will raise a StopIteration error
+                tile = next(t for t in self.tiles if t.letter == ch)
+
+                tiles.append(tile)
+                self.tiles.remove(tile)
+            rack.tiles.extend(tiles)
             return
 
         existing = len(rack.tiles)

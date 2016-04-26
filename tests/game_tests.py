@@ -41,10 +41,21 @@ class GamePlayTests(TestCase):
         assert len(rack.tiles) == 7
         assert total - 7 == len(game.tiles)
 
+    def test_rack_default(self):
+        game = Game(self.board)
+        rack = Rack(7)
+        total = len(game.tiles)
+        game.fillRack(rack, 'xcghiut')
+        current = len(game.tiles)
+        # pdb.set_trace()
+
+        assert total - current == 7
+
     def test_player_rack(self):
         rack = Rack(7)
         game = Game(self.board)
         player = Player('Player 1', rack)
+        # pdb.set_trace()
         game.fillRack(player.rack, 'xcwaaei')
         game.setPlayer(player)
         game.setPosition((7,7))
@@ -57,7 +68,13 @@ class GamePlayTests(TestCase):
 
         #player rack tiles would have not reduced
         assert len(player.rack.tiles) == 7
-
+        # pdb.set_trace()
         result = game.playLetter('c')
         self.assertTrue(result['result'])
         assert len(player.rack.tiles) == 6
+
+    def test_rack1(self):
+        game = Game(self.board)
+        rack = Rack(7)
+        with self.assertRaises(StopIteration):
+            game.fillRack(rack, 'xxicket')

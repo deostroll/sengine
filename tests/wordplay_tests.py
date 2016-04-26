@@ -66,3 +66,9 @@ class WordPlayTests(TestCase):
         res = game.endTurn()
 
         self.assertTrue(res['result'], "should accept turn")
+
+    def test_first_turn_score(self):
+
+        game = self.game
+        player = self.player
+        game.fillRack(player.rack, 'sinaete')

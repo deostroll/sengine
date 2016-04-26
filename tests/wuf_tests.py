@@ -27,6 +27,7 @@ class WUFTests(TestCase):
         e = '0123356789'
         e = intify(e)
         self.assertSequenceEqual(e, uf.id)
+        self.assertSequenceEqual(e, arr)
 
         uf.join(4,9)
         e = '0123356783'

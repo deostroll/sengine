@@ -83,6 +83,8 @@ class Tile:
     def __init__(self, letter, score):
         self.letter = letter
         self.score = score
+    def __repr__(self):
+        return self.letter
 
 class Rack:
     def __init__(self, size):
