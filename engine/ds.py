@@ -1,3 +1,5 @@
+from operator import itemgetter
+
 class WUF:
     def __init__(self, array):
         self.id = array
@@ -26,3 +28,18 @@ class WUF:
         else:
             self.id[q] = rp
             self.sz[rp] = self.sz[rp] + self.sz[rq] + 1
+
+def isValidSequence(seq, size):
+    assert len(seq) > 1
+
+    # sorting with x-ordinate then y-ordinate
+    sortedSeq = sorted(seq, key=itemgetter(0,1))
+
+    xSame = sortedSeq[0][0] == sortedSeq[1][0]
+
+    if xSame:
+        test_val = sortedSeq[0][0]
+        return all(map(lambda x: x[0] == test_val, sortedSeq))
+    else:
+        test_val = sortedSeq[0][1]
+        return all(map(lambda x: x[1] == test_val,sortedSeq))
