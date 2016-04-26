@@ -76,7 +76,7 @@ class WordPlayTests(TestCase):
         game.setOrientation('horizontal')
         game.setPosition((7, 4))
 
-        tileDb = game.loadTiles()
+        tileDb = loadTiles()
 
         tile_scores = tileDb['letter_score']
 
@@ -92,3 +92,22 @@ class WordPlayTests(TestCase):
         expectedScore = expectedScore * 2
 
         self.assertEqual(actualScore, expectedScore)
+
+    def test_first_turn_score_exception(self):
+
+        game = self.game
+        player = self.player
+        rackLetters = 'sinaete'
+        game.fillRack(player.rack, rackLetters)
+        game.setOrientation('horizontal')
+        game.setPosition((6, 4))
+
+        tileDb = loadTiles()
+
+        tile_scores = tileDb['letter_score']
+
+        word = 'tense'
+        game.playWord('tense')
+
+        with self.assertRaises(Exception):
+            game.getCurrentScore()
