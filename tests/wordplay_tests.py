@@ -71,4 +71,24 @@ class WordPlayTests(TestCase):
 
         game = self.game
         player = self.player
-        game.fillRack(player.rack, 'sinaete')
+        rackLetters = 'sinaete'
+        game.fillRack(player.rack, rackLetters)
+        game.setOrientation('horizontal')
+        game.setPosition((7, 4))
+
+        tileDb = game.loadTiles()
+
+        tile_scores = tileDb['letter_score']
+
+        word = 'tense'
+        game.playWord('tense')
+
+        actualScore = game.getCurrentScore()
+        expectedScore = 0
+        for ch in word:
+            t = next(tile for tile in tileDb['tiles'] if tile.letter == ch)
+            expectedScore = expectedScore + t.score
+
+        expectedScore = expectedScore * 2
+
+        self.assertEqual(actualScore, expectedScore)
