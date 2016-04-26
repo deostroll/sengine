@@ -83,7 +83,7 @@ class WordPlayTests(TestCase):
         word = 'tense'
         game.playWord('tense')
 
-        actualScore = game.getCurrentScore()
+        actualScore = game.getCurrentScore()['score']
         expectedScore = 0
         for ch in word:
             t = next(tile for tile in tileDb['tiles'] if tile.letter == ch)
@@ -107,7 +107,5 @@ class WordPlayTests(TestCase):
         tile_scores = tileDb['letter_score']
 
         word = 'tense'
-        game.playWord('tense')
-
-        with self.assertRaises(Exception):
-            game.getCurrentScore()
+        res = game.playWord('tense')
+        self.assertFalse(res['result'], "should be false")
