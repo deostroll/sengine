@@ -36,10 +36,14 @@ def isValidSequence(seq, size):
     sortedSeq = sorted(seq, key=itemgetter(0,1))
 
     xSame = sortedSeq[0][0] == sortedSeq[1][0]
-
+    dir = 'invalid'
     if xSame:
         test_val = sortedSeq[0][0]
-        return all(map(lambda x: x[0] == test_val, sortedSeq))
+        res = all(map(lambda x: x[0] == test_val, sortedSeq))
+        dir = 'horizontal'
     else:
         test_val = sortedSeq[0][1]
-        return all(map(lambda x: x[1] == test_val,sortedSeq))
+        res = all(map(lambda x: x[1] == test_val,sortedSeq))
+        dir = 'vertical'
+
+    return { 'result': res, 'direction': dir }
