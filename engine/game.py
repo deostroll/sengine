@@ -2,6 +2,7 @@ from core import Tile
 import json
 from random import randrange
 from ds import WUF, isValidSequence
+# import pdb
 
 def loadTiles():
     f = open('data/tiles.json')
@@ -339,10 +340,10 @@ class Game:
                             cell = self.board.getCell(pos)
                             if not cell.hasTile():
                                 return Result('False', 'invalid word formation in row')
-                            lqueue.append(cell.tile)
+                            lqueue.append((cell.tile, pos))
                         else:
                             # add tile to lqueue
-                            lqueue.append(tile)
+                            lqueue.append((tile, pos))
 
                 else:
                     sorted(utilized, key=lambda x: x[1][0]) # sort with x-ordinate
@@ -370,8 +371,10 @@ class Game:
                 return Result(False, 'invalid tile placement. should be placed either all vertically or horizontally')
 
             assert lqueue is not None
-
+            # pdb.set_trace()
             score = self._computeQueue(lqueue)
+
+            return Result(True, 'computed score', { 'score': score })
 
     def _computeQueue(self, queue):
         score = 0
