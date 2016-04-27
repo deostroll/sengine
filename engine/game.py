@@ -1,7 +1,7 @@
 from core import Tile
 import json
 from random import randrange
-from ds import WUF
+from ds import WUF, isValidSequence
 
 def loadTiles():
     f = open('data/tiles.json')
@@ -269,6 +269,7 @@ class Game:
     def getCurrentScore(self):
 
         assert self.orientation is not None
+        assert len(self._utilized) > 0
 
         # 1. Check if all letters put
         #    belong to one row or column
@@ -277,44 +278,102 @@ class Game:
         # 3. retrieve all words (horizontal and vertical)
         # 4. compute score
 
+        """
 
+            General strategy
+            ================
+
+            1-  If only 1 letter in queue
+
+                1.1-    if is first turn
+
+                            1.1.1-  throw error
+
+                1.2-    check for neighboring joins and make word(s)
+
+                1.3-    If there are words - compute score
+
+        """
         #clone utilized queue
         utilized = self._utilized[:]
 
-        # sort it
-        def _sort_(a):
-            if self.orientation == 'horizontal':
-                return a[1]
+        if len(utilized) == 1:
+            #we've to check neighbours
+            if self.isFirstTurn
+                return { 'result': False, 'msg': 'First turn not valid word'}
+
+            # we'd only be interested
+            # in a case where this isn't
+            # the first turn
+
+        if self.isFirstTurn:
+            # we don't really care for neighbours
+            # at this point
+
+            # join each letter
+            # and try to compute
+
+            positions = map(lambda x: x[1], utilized)
+
+            seqRet = isValidSequence(positions)
+
+            if seqRet['result'] == True:
+                if seqRet['direction'] == 'horizontal':
+                    sorted(utilized, key=lambda x: x[1][1])
+                    pass
+                else:
+                    pass
             else:
-                return a[0]
+                return Result(False, 'Invalid placement of tiles')
 
-        sorted(utilized, key=_sort_)
-        vcells = self.board.virtual_cells[:]
 
-        for item in utilized:
-            self.joinNeighbours(item[1], vcells)
-
-        uf = WUF(vcells)
-
-        for i in range(1, len(utilized)):
-            prev = utilized[i - 1]
-            curr = utilized[i]
-            pidx = self.board._getIndex(prev[1])
-            cidx = self.board._getIndex(curr[1])
-            uf.join(pidx, cidx)
-
-        _, p = utilized[0]
-
-        #check if in sequence
-        length = len(utilized)
-
-        for x in utilized:
-            pos = utilized[1]
-
-        idx = self.board._getIndex(p)
-        midCellIndex = self.board.size** 2 / 2
-
-        if uf.isConnected(idx, midCellIndex) == False:
-            raise Exception('Not connected') if not self.isFirstTurn else Exception('Not correctly placed for first turn')
+        #
+        # # sort it
+        # def _sort_(a):
+        #     if self.orientation == 'horizontal':
+        #         return a[1]
+        #     else:
+        #         return a[0]
+        #
+        # sorted(utilized, key=_sort_)
+        # vcells = self.board.virtual_cells[:]
+        #
+        # for item in utilized:
+        #     self.joinNeighbours(item[1], vcells)
+        #
+        # uf = WUF(vcells)
+        #
+        # for i in range(1, len(utilized)):
+        #     prev = utilized[i - 1]
+        #     curr = utilized[i]
+        #     pidx = self.board._getIndex(prev[1])
+        #     cidx = self.board._getIndex(curr[1])
+        #     uf.join(pidx, cidx)
+        #
+        # _, p = utilized[0]
+        #
+        # #check if in sequence
+        # length = len(utilized)
+        #
+        # for x in utilized:
+        #     pos = utilized[1]
+        #
+        # idx = self.board._getIndex(p)
+        # midCellIndex = self.board.size** 2 / 2
+        #
+        # if uf.isConnected(idx, midCellIndex) == False:
+        #     raise Exception('Not connected') if not self.isFirstTurn else Exception('Not correctly placed for first turn')
 
         #now lets compute this
+
+
+def Result(res, msg, other=None):
+    ret = {}
+    ret['result'] = res
+    ret['msg'] = msg
+
+    if other is not None:
+        for key in other:
+            ret[key] = other[key]
+
+    return ret
