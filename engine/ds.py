@@ -29,7 +29,7 @@ class WUF:
             self.id[q] = rp
             self.sz[rp] = self.sz[rp] + self.sz[rq] + 1
 
-def isValidSequence(seq, size):
+def isValidSequence(seq):
     assert len(seq) > 1
 
     # sorting with x-ordinate then y-ordinate
