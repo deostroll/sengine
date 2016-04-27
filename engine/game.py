@@ -299,7 +299,7 @@ class Game:
 
         if len(utilized) == 1:
             #we've to check neighbours
-            if self.isFirstTurn
+            if self.isFirstTurn:
                 return { 'result': False, 'msg': 'First turn not valid word'}
 
             # we'd only be interested
@@ -319,52 +319,90 @@ class Game:
 
             if seqRet['result'] == True:
                 if seqRet['direction'] == 'horizontal':
-                    sorted(utilized, key=lambda x: x[1][1])
-                    pass
+                    sorted(utilized, key=lambda x: x[1][1]) # sort with y-ordinate
+                    _, fpos = utilized[0]
+                    lqueue = []
+                    npos = -1
+                    gap = False
+                    for tile, pos in utilized:
+                        if npos == -1:
+                            npos = pos[1]
+                        elif npos == pos[1]:
+                            gap = False
+                        else:
+                            gap = True
+
+                        npos = npos + 1
+
+                        if gap:
+                            # check against the board
+                            cell = self.board.getCell(pos)
+                            if not cell.hasTile():
+                                return Result('False', 'invalid word formation in row')
+                            lqueue.append(cell.tile)
+                        else:
+                            # add tile to lqueue
+                            lqueue.append(tile)
+
                 else:
-                    pass
+                    sorted(utilized, key=lambda x: x[1][0]) # sort with x-ordinate
+                    lqueue = []
+                    npos = -1
+                    gap = False
+                    for tile, pos in utilized:
+                        if npos == -1:
+                            npos = pos[0]
+                        elif npos == pos[0]:
+                            gap = False
+                        else:
+                            gap = True
+
+                        if gap:
+                            # check against the board
+                            cell = self.board.getCell(pos)
+                            if not cell.hasTile():
+                                return Result('False', 'invalid word formation in column')
+                            lqueue.append((cell.tile, pos))
+                        else:
+                            # add tile to lqueue
+                            lqueue.append((tile, pos))
             else:
-                return Result(False, 'Invalid placement of tiles')
+                return Result(False, 'invalid tile placement. should be placed either all vertically or horizontally')
+
+            assert lqueue is not None
+
+            score = self._computeQueue(lqueue)
+
+    def _computeQueue(self, queue):
+        score = 0
+        hasWordScoreBonus = False
+        for tile, pos in queue:
+            cell = self.board.getCell(pos)
+            ls = tile.score
+            if cell.hasBonus():
+                if cell.bonus == 'TL':
+                    ls = ls * 3
+                elif cell.bonus == 'DL':
+                    ls = ls * 2
+                else:
+                    hasWordScoreBonus = True
+                    wsType = cell.bonus
+
+            score = score + ls
+        if hasWordScoreBonus:
+            factor = 3 if wsType == 'TW' else 2
+            score = score * factor
+        return score
 
 
-        #
-        # # sort it
-        # def _sort_(a):
-        #     if self.orientation == 'horizontal':
-        #         return a[1]
-        #     else:
-        #         return a[0]
-        #
-        # sorted(utilized, key=_sort_)
-        # vcells = self.board.virtual_cells[:]
-        #
-        # for item in utilized:
-        #     self.joinNeighbours(item[1], vcells)
-        #
-        # uf = WUF(vcells)
-        #
-        # for i in range(1, len(utilized)):
-        #     prev = utilized[i - 1]
-        #     curr = utilized[i]
-        #     pidx = self.board._getIndex(prev[1])
-        #     cidx = self.board._getIndex(curr[1])
-        #     uf.join(pidx, cidx)
-        #
-        # _, p = utilized[0]
-        #
-        # #check if in sequence
-        # length = len(utilized)
-        #
-        # for x in utilized:
-        #     pos = utilized[1]
-        #
-        # idx = self.board._getIndex(p)
-        # midCellIndex = self.board.size** 2 / 2
-        #
-        # if uf.isConnected(idx, midCellIndex) == False:
-        #     raise Exception('Not connected') if not self.isFirstTurn else Exception('Not correctly placed for first turn')
 
-        #now lets compute this
+
+
+
+
+
+
+
 
 
 def Result(res, msg, other=None):
