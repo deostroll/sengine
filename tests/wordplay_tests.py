@@ -109,3 +109,21 @@ class WordPlayTests(TestCase):
         word = 'tense'
         res = game.playWord('tense')
         self.assertFalse(res['result'], "should be false")
+
+    def test_compute_lqueue_score(self):
+        game = self.game
+        # lqueue is the queue of tiles and their positions
+        # on the board
+        def createTile(l):
+            return Tile(l, game.letter_scores[l])
+        lqueue = [
+            (createTile('t'), (7, 5)),
+            (createTile('e'), (7, 6)),
+            (createTile('n'), (7, 7)),
+            (createTile('s'), (7, 8)),
+            (createTile('e'), (7, 9)),
+        ]
+
+        score = game._computeQueue(lqueue)
+
+        self.assertEquals(score, 10)
