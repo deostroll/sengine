@@ -15,4 +15,5 @@ understand the api I suggest read the tests. If you want to contribute - read th
 
 Scrabble (TM) is a trademark of [Hasbro](https://en.wikipedia.org/wiki/Hasbro), Inc and [Mattel](https://en.wikipedia.org/wiki/Mattel).
 
-This is being developed for the [Angular Attack hackathon](https://www.angularattack.com).
+All present development has been moved to the develop branch.
+
