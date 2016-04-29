@@ -1,8 +1,15 @@
-from core import Tile
+from core import Tile, Board
 import json
 from random import randrange
 from ds import WUF, isValidSequence
 # import pdb
+
+
+class Events:
+    READY = 0
+    TAKE_TURN = 1
+    RACK_FILLED = 2
+    QUIT = 3
 
 def loadTiles():
     f = open('data/tiles.json')
@@ -396,17 +403,11 @@ class Game:
             factor = 3 if wsType == 'TW' else 2
             score = score * factor
         return score
-
-
-
-
-
-
-
-
-
-
-
+    @staticmethod
+    def getInstance():
+        board = Board(15)
+        game = Game(board)
+        return game
 
 def Result(res, msg, other=None):
     ret = {}
