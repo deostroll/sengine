@@ -111,7 +111,23 @@ class Rack:
                 break
         return res
 
+class PlayerType:
+    Human = 0
+    Ai = 1
+
 class Player:
     def __init__(self, name, rack):
         self.name = name
         self.rack = rack
+        self.type = PlayerType.Human
+
+class Ai(Player):
+    def __init__(self, rack):
+        Player.__init__(self, 'Ai',  rack)
+        self.type = PlayerType.Ai
+
+    def setup(self, game):
+        self.game = game
+
+    def play(self):
+        pass

@@ -1,4 +1,4 @@
-from core import Tile, Board
+from core import Tile, Board, Player, Ai
 import json
 from random import randrange
 from ds import WUF, isValidSequence
@@ -7,7 +7,6 @@ from ds import WUF, isValidSequence
 
 class Events:
     READY = 0
-    TAKE_TURN = 1
     RACK_FILLED = 2
     QUIT = 3
 
@@ -32,6 +31,7 @@ class Game:
         self.board = board
         self.loadTiles()
         self.isFirstTurn = True
+        self.sinks = []
 
     def  loadTiles(self):
         res = loadTiles()
@@ -408,6 +408,44 @@ class Game:
         board = Board(15)
         game = Game(board)
         return game
+
+    def setupPlayer(self, name, type='human', humanFirstTurn=True):
+        rack = Rack(7)
+        player = Player(name, rack)
+        self.fillRack(rack)
+        self.trigger(Events.RACK_FILLED, player)
+
+        rack = Rack(7)
+        ai = Ai(rack)
+        self.fillRack(rack)
+        ai.setup(self)
+        self.trigger(Events.RACK_FILLED, ai)
+
+        def onAiPlayed(game, evt, *args):
+            self.removeSink('_ai_')
+            self.trigger(Events.READY)
+
+        if not humanFirstTurn:
+            self.wireSink(onAiPlayed, '_ai_')
+            ai.play()
+        else:
+            self.trigger(Events.READY)
+
+    def trigger(evt, *args):
+        for sink, handler in self.sinks:
+            handler(self, evt, *args)
+
+    def wireSink(self, handler, source='_internal_'):
+        self.sinks.append((source, handler))
+
+    def removeSink(self, source):
+
+        for item in self.sinks:
+            x, _ = item
+            if x == source:
+                break
+
+        self.sinks.remove(item)
 
 def Result(res, msg, other=None):
     ret = {}
