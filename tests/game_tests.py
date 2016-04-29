@@ -78,3 +78,7 @@ class GamePlayTests(TestCase):
         rack = Rack(7)
         with self.assertRaises(StopIteration):
             game.fillRack(rack, 'xxicket')
+
+    def test_game_instance(self):
+        game = Game.getInstance()
+        self.assertIsNotNone(game)
