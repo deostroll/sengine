@@ -9,6 +9,8 @@ class Events:
     READY = 0
     RACK_FILLED = 2
     QUIT = 3
+    BUSY = 4
+    AI_PLAYED = 5
 
 def loadTiles():
     f = open('data/tiles.json')
@@ -32,6 +34,7 @@ class Game:
         self.loadTiles()
         self.isFirstTurn = True
         self.sinks = []
+        self.status = Events.BUSY
 
     def  loadTiles(self):
         res = loadTiles()
@@ -409,7 +412,7 @@ class Game:
         game = Game(board)
         return game
 
-    def setupPlayer(self, name, type='human', humanFirstTurn=True):
+    def setupPlayer(self, name, type='human', firstTurn=True):
         rack = Rack(7)
         player = Player(name, rack)
         self.fillRack(rack)
@@ -422,11 +425,11 @@ class Game:
         self.trigger(Events.RACK_FILLED, ai)
 
         def onAiPlayed(game, evt, *args):
-            self.removeSink('_ai_')
+            self.removeSink('_setup_')
             self.trigger(Events.READY)
 
-        if not humanFirstTurn:
-            self.wireSink(onAiPlayed, '_ai_')
+        if not firstTurn:
+            self.wireSink(onAiPlayed, '_setup_')
             ai.play()
         else:
             self.trigger(Events.READY)
