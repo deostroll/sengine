@@ -1,4 +1,4 @@
-from core import Tile, Board, Player, Ai
+from core import Tile, Board, Player, Ai, Rack
 import json
 from random import randrange
 from ds import WUF, isValidSequence
@@ -30,6 +30,12 @@ def loadTiles():
     }
 
 class Game:
+
+    @staticmethod
+    def getInstance():
+        board = Board(15)
+        game = Game(board)
+        return game
 
     def __init__(self, board):
         self.board = board
@@ -82,9 +88,9 @@ class Game:
     def setPlayer(self, name):
         self.name = name
 
-    def trigger(evt, *args):
+    def trigger(self, evt, *args):
         for sink, handler in self.sinks:
-            handler(self, evt, *args)
+            handler(evt, self, *args)
 
     def wireSink(self, handler, source='_internal_'):
         self.sinks.append((source, handler))
@@ -98,9 +104,13 @@ class Game:
 
         self.sinks.remove(item)
 
+    def setupPlayer(self, name):
+        self.name = name
+
     def start(self):
         self.evt = threading.Event()
         t = threading.Thread(target=self.run)
+        t.daemon = True
         t.start()
 
     def waitForExit(self):
@@ -110,7 +120,8 @@ class Game:
         self.evt.set()
 
     def run(self):
-        game = self.game
+        print 'run...'
+        game = self
         rack = Rack(7)
         player = Player(self.name, rack)
         game.fillRack(player.rack)

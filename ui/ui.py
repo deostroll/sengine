@@ -1,4 +1,4 @@
-from engine import Game
+from engine import Game, Events
 from utils import strings
 
 class ConsoleGameUI:
@@ -7,9 +7,10 @@ class ConsoleGameUI:
         game.wireSink(self.onEvent, '_console_')
 
     def onEvent(self, evt, *args):
-        if evt == Game.Events.READY:
+        print 'evt:'        , evt
+        if evt == Events.READY:
             self.refresh()
-            args(0).quit()
+            args[0].quit()
 
     def runloop(self):
         self.game.start()
@@ -19,7 +20,7 @@ class ConsoleGameUI:
         board = self.game.board
         result = ' \ '
         rng = range(15)
-        result = result + ' '. join( map(lambda x: strings.pad(x, 2)) ) + '\n'
+        result = result + ' '. join( map(lambda x: strings.pad(x, 2), rng) ) + '\n'
 
         def getCell(cell):
             if cell.hasTile():
@@ -37,15 +38,19 @@ class ConsoleGameUI:
 
         for x in rng:
             result = result + strings.pad(x, 2) + ' '
-            cells = board.cells[x]
+            cells = []
+
+            for y in range(board.size):
+                cells.append(board.getCell((x, y)))
+
             suffix = ' '.join( map(lambda x: strings.pad(getCell(x), 2), cells) )
             result = result + suffix + '\n'
 
         print result
 
 
-    def setPlayer(self, name, firstTurn=True):
-        self.game.setupPlayer(name, firstTurn)
+    def setPlayer(self, name):
+        self.game.setupPlayer(name)
 
     def verify(self):
         pass
@@ -54,7 +59,7 @@ def main():
 
     cgame = ConsoleGameUI()
 
-    cgame.setupPlayer('deostroll')
+    cgame.setPlayer('deostroll')
 
     cgame.runloop()
 
