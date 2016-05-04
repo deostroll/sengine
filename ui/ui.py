@@ -8,7 +8,8 @@ class ConsoleGameUI:
 
     def onEvent(self, evt, *args):
         if evt == Game.Events.READY:
-            print 'cool'
+            self.refresh()
+            args(0).quit()
 
     def runloop(self):
         self.game.start()
@@ -19,11 +20,28 @@ class ConsoleGameUI:
         result = ' \ '
         rng = range(15)
         result = result + ' '. join( map(lambda x: strings.pad(x, 2)) ) + '\n'
+
+        def getCell(cell):
+            if cell.hasTile():
+                return cell.letter
+            elif cell.hasBonus():
+                bonus = cell.bonus
+                if bonus == 'TW' : ch =  '='
+                if bonus == 'DW' : ch = '+'
+                if bonus == 'TL' : ch = '\''
+                if bonus == 'DL' : ch = '-'
+                if bonus == 'ST' : ch = '*'
+                return ch
+            else:
+                return ' '
+
         for x in rng:
             result = result + strings.pad(x, 2) + ' '
             cells = board.cells[x]
-            suffix = ' '.join( map(lambda x: ' ' + x.letter ))
-            result = result + suffix
+            suffix = ' '.join( map(lambda x: strings.pad(getCell(x), 2), cells) )
+            result = result + suffix + '\n'
+
+        print result
 
 
     def setPlayer(self, name, firstTurn=True):
@@ -34,21 +52,13 @@ class ConsoleGameUI:
 
 def main():
 
-    # game = Game.getInstance()
-    #
-    # def event_handler(game, evt, *args):
-    #     if evt == Game.Events.READY:
-    #         print 'cool'
-    #
-    # game.wireSink(event_handler, 'ui')
-    #
-    # game.setupPlayer('deostroll') #sets up as first player
-
     cgame = ConsoleGameUI()
 
     cgame.setupPlayer('deostroll')
 
     cgame.runloop()
+
+    print 'End'
 
 if __name__ == '__main__':
     main()
