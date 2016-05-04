@@ -40,7 +40,9 @@ class Game:
         self.loadTiles()
         self.isFirstTurn = True
         self.sinks = []
-        self.status = Events.BUSY
+        # self.status = Events.BUSY
+        self.quitFlag = False
+        self.commitFlag = False
 
     def  loadTiles(self):
         res = loadTiles()
@@ -115,10 +117,11 @@ class Game:
         self.evt.wait()
 
     def quit(self):
+        self.quitFlag = True
         self.evt.set()
 
     def run(self):
-        print 'run...'
+        # print 'run...'
         game = self
         rack = Rack(7)
         player = Player(self.name, rack)
@@ -141,18 +144,12 @@ class Game:
 
         canProceed = True
 
-        while canProceed:
+        while True:
             round = round + 1
 
-            #assemble players (in reverse order)
-            players = [ai, player]
+            self.trigger(Events.READY, self, round)
 
-            while len(players) != 0 and canProceed:
-                current = players.pop()
+            if self.quit:
+                break
 
-                if current == player:
-                    self.trigger(Events.READY, self, round)
-
-                    #assess game continuity
-                else:
-                    pass
+            # ai.play()

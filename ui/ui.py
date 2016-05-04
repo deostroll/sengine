@@ -2,7 +2,43 @@ from engine import Game, Events
 from utils import strings
 
 def repl(game):
-    pass
+
+    htext = """
+h - this help menu
+
+p - put letter into a cell. General syntax:
+      p <x> <y> <letter>
+
+    where,
+      (x, y), is a valid empty ordinate
+      letter, is the letter in the current rack
+
+c - clear board of current entries
+
+s - swap tile
+	  s <letters>
+
+q - quit game and exit
+
+v - view score
+"""
+    while True:
+        cmd = raw_input('Command (type h or help for help): ').lower()
+
+        op = cmd[0]
+
+        if op == 'h':
+            print htext
+        elif op == 'p':
+            _, x, y, l = cmd.split(' ')
+            game.put((x,y), l)
+            break
+        elif op == 'c':
+            game.clear()
+            break
+        elif op == 'q':
+            game.quit()
+            break
 
 class ConsoleGameUI:
     def __init__(self):
@@ -13,7 +49,7 @@ class ConsoleGameUI:
         # print 'evt:'        , evt
         if evt == Events.READY:
             self.refresh()
-            self.game.quit()
+            repl(self.game)
 
     def runloop(self):
         self.game.start()
@@ -24,7 +60,8 @@ class ConsoleGameUI:
         result = ' \ '
         rng = range(15)
         result = result + ' '. join( map(lambda x: strings.pad(x, 2), rng) ) + '\n'
-
+        _, c = getTerminalSize()
+        for x in range(c) : print ''
         def getCell(cell):
             if cell.hasTile():
                 return cell.letter
@@ -32,7 +69,7 @@ class ConsoleGameUI:
                 bonus = cell.bonus
                 if bonus == 'TW' : ch =  '='
                 if bonus == 'DW' : ch = '+'
-                if bonus == 'TL' : ch = '\''
+                if bonus == 'TL' : ch = ':'
                 if bonus == 'DL' : ch = '-'
                 if bonus == 'ST' : ch = '*'
                 return ch
@@ -67,6 +104,35 @@ def main():
     cgame.runloop()
 
     print 'End'
+
+def getTerminalSize():
+    import os
+    env = os.environ
+    def ioctl_GWINSZ(fd):
+        try:
+            import fcntl, termios, struct, os
+            cr = struct.unpack('hh', fcntl.ioctl(fd, termios.TIOCGWINSZ,
+        '1234'))
+        except:
+            return
+        return cr
+    cr = ioctl_GWINSZ(0) or ioctl_GWINSZ(1) or ioctl_GWINSZ(2)
+    if not cr:
+        try:
+            fd = os.open(os.ctermid(), os.O_RDONLY)
+            cr = ioctl_GWINSZ(fd)
+            os.close(fd)
+        except:
+            pass
+    if not cr:
+        cr = (env.get('LINES', 25), env.get('COLUMNS', 80))
+
+        ### Use get(key[, default]) instead of a try/catch
+        #try:
+        #    cr = (env['LINES'], env['COLUMNS'])
+        #except:
+        #    cr = (25, 80)
+    return int(cr[1]), int(cr[0])
 
 if __name__ == '__main__':
     main()
