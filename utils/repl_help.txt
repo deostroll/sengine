@@ -9,3 +9,5 @@ c - clear the turn
 q - exit the Game
 
 r - refresh the console
+
+b - show bonus tile placement

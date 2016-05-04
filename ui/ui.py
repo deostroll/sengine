@@ -1,7 +1,7 @@
 from engine import Game, Events
-from utils import strings, help
+from utils import strings, help, tty
 
-def repl(game):
+def repl(game, console):
 
     while True:
         cmd = raw_input('Command (type h or help for help): ').lower()
@@ -16,10 +16,15 @@ def repl(game):
             break
         elif op == 'c':
             game.clear()
+            console.refresh()
             break
         elif op == 'q':
             game.quit()
             break
+        elif op == 'b':
+            console.showBonus()
+        elif op == 'r':
+            console.refresh()
 
 class ConsoleGameUI:
     def __init__(self):
@@ -30,7 +35,7 @@ class ConsoleGameUI:
         # print 'evt:'        , evt
         if evt == Events.READY:
             self.refresh()
-            repl(self.game)
+            repl(self.game, self)
 
     def runloop(self):
         self.game.start()
@@ -39,12 +44,12 @@ class ConsoleGameUI:
     def refresh(self):
         board = self.game.board
         q = self.game.q
-
+        tty.clear()
         result = ' \ '
         rng = range(15)
         result = result + ' '. join( map(lambda x: strings.pad(x, 2), rng) ) + '\n'
-        _, c = getTerminalSize()
-        for x in range(c) : print ''
+        # _, c = getTerminalSize()
+        # for x in range(c) : print ''
         def getCell(cell):
             if cell.hasTile():
                 return cell.letter
@@ -70,13 +75,46 @@ class ConsoleGameUI:
             result = result + suffix + '\n'
 
         print result
+        print ''
+        print '::board and rack'
 
 
     def setPlayer(self, name):
         self.game.setupPlayer(name)
 
-    def verify(self):
-        pass
+    def showBonus(self):
+        tty.clear()
+        rng = range(15)
+        board = self.game.board
+        result = ' \ '
+        result = result + ' '. join( map(lambda x: strings.pad(x, 2), rng) ) + '\n'
+        def printBonus(cell):
+            if cell.hasBonus():
+                bonus = cell.bonus
+                if bonus == 'TW' : ch =  '='
+                if bonus == 'DW' : ch = '+'
+                if bonus == 'TL' : ch = ':'
+                if bonus == 'DL' : ch = '-'
+                if bonus == 'ST' : ch = '*'
+                return ch
+            else:
+                return ' '
+
+        for x in rng:
+            result = result + strings.pad(x, 2) + ' '
+            cells = []
+
+            for y in range(board.size):
+                cells.append(board.getCell((x, y)))
+
+            suffix = ' '.join( map(lambda x: strings.pad(printBonus(x), 2), cells) )
+            result = result + suffix + '\n'
+
+        print result
+        print ''
+        print '::bonus cells'
+
+
 
 def main():
 
