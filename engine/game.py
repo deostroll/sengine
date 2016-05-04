@@ -9,10 +9,8 @@ import threading
 
 class Events:
     READY = 0
-    RACK_FILLED = 2
     QUIT = 3
-    BUSY = 4
-    AI_PLAYED = 5
+    ERROR = 4
 
 def loadTiles():
     f = open('data/tiles.json')
@@ -153,7 +151,7 @@ class Game:
                 current = players.pop()
 
                 if current == player:
-                    self.trigger(Events.READY, self)
+                    self.trigger(Events.READY, self, round)
 
                     #assess game continuity
                 else:

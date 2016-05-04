@@ -1,16 +1,19 @@
 from engine import Game, Events
 from utils import strings
 
+def repl(game):
+    pass
+
 class ConsoleGameUI:
     def __init__(self):
         self.game = game = Game.getInstance();
         game.wireSink(self.onEvent, '_console_')
 
     def onEvent(self, evt, *args):
-        print 'evt:'        , evt
+        # print 'evt:'        , evt
         if evt == Events.READY:
             self.refresh()
-            args[0].quit()
+            self.game.quit()
 
     def runloop(self):
         self.game.start()
