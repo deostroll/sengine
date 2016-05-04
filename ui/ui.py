@@ -1,34 +1,15 @@
 from engine import Game, Events
-from utils import strings
+from utils import strings, help
 
 def repl(game):
 
-    htext = """
-h - this help menu
-
-p - put letter into a cell. General syntax:
-      p <x> <y> <letter>
-
-    where,
-      (x, y), is a valid empty ordinate
-      letter, is the letter in the current rack
-
-c - clear board of current entries
-
-s - swap tile
-	  s <letters>
-
-q - quit game and exit
-
-v - view score
-"""
     while True:
         cmd = raw_input('Command (type h or help for help): ').lower()
 
         op = cmd[0]
 
         if op == 'h':
-            print htext
+            print help.text
         elif op == 'p':
             _, x, y, l = cmd.split(' ')
             game.put((x,y), l)
@@ -57,6 +38,8 @@ class ConsoleGameUI:
 
     def refresh(self):
         board = self.game.board
+        q = self.game.q
+
         result = ' \ '
         rng = range(15)
         result = result + ' '. join( map(lambda x: strings.pad(x, 2), rng) ) + '\n'

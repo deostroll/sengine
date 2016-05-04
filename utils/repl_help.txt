@@ -1,0 +1,11 @@
+p - put letter at a location
+      p <x> <y> <l>
+
+      where (x,y) - location, and
+        l - letter in the rack
+
+c - clear the turn
+
+q - exit the Game
+
+r - refresh the console

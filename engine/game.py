@@ -43,6 +43,7 @@ class Game:
         # self.status = Events.BUSY
         self.quitFlag = False
         self.commitFlag = False
+        self.q = {}
 
     def  loadTiles(self):
         res = loadTiles()
@@ -153,3 +154,9 @@ class Game:
                 break
 
             # ai.play()
+
+    def clear(self):
+        self.q = {}
+
+    def put(self, pos, letter):
+        self.q[pos] = letter
