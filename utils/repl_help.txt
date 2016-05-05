@@ -11,3 +11,11 @@ q - exit the Game
 r - refresh the console
 
 b - show bonus tile placement
+
+w - input an entire word at location
+      w <x> <y> <word> [<v>]
+
+    This inputs a the word at location (x, y).
+
+    Default placement orientation is horizontal.
+    "v" is for vertical placement. Optional.
