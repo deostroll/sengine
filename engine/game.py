@@ -42,7 +42,7 @@ class Game:
         self.sinks = []
         # self.status = Events.BUSY
         self.quitFlag = False
-        self.commitFlag = False
+        self.played = False
         self.q = {}
 
     def  loadTiles(self):
@@ -160,3 +160,6 @@ class Game:
 
     def put(self, pos, letter):
         self.q[pos] = letter
+
+    def putWord(self, pos, word, direction):
+        pass
