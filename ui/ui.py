@@ -17,8 +17,8 @@ def repl(game, console):
             break
         elif op == 'c':
             game.clear()
+            console.clear()
             console.refresh()
-            break
         elif op == 'q':
             game.quit()
             break
@@ -39,7 +39,7 @@ def repl(game, console):
 
             x, y = int(x), int(y)
             game.putWord((x,y), word, ori)
-
+            break
 class ConsoleGameUI:
     def __init__(self):
         self.game = game = Game.getInstance();
@@ -50,6 +50,11 @@ class ConsoleGameUI:
         if evt == Events.READY:
             self.refresh()
             repl(self.game, self)
+        elif evt == Events.ERROR:
+            print '> Error: ', self.reason
+            raw_input('> Press enter to continue...')
+            self.game.resetError()
+
 
     def runloop(self):
         self.game.start()
@@ -90,7 +95,7 @@ class ConsoleGameUI:
 
         print result
         print ''
-        print '::board and rack'
+        print '> board and rack printed...'
 
 
     def setPlayer(self, name):
@@ -126,7 +131,7 @@ class ConsoleGameUI:
 
         print result
         print ''
-        print '::bonus cells'
+        print '> bonus cells printed...'
     def clear(self):
         tty.clear()
 

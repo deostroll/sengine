@@ -44,6 +44,12 @@ class Game:
         self.quitFlag = False
         self.played = False
         self.q = {}
+        self.error = False
+        self.reason = ''
+
+    def resetError(self):
+        self.error = False
+        self.reason = ''
 
     def  loadTiles(self):
         res = loadTiles()
@@ -152,6 +158,11 @@ class Game:
 
             if self.quit:
                 break
+
+            if self.error:
+                self.trigger(Events.ERROR, self, self.reason)
+                round = round - 1
+                continue
             # self.current = ai
             # ai.play()
 
