@@ -12,6 +12,7 @@ def repl(game, console):
             print help.text
         elif op == 'p':
             _, x, y, l = cmd.split(' ')
+            x, y = int(x), int(y)
             game.put((x,y), l)
             break
         elif op == 'c':
@@ -22,9 +23,22 @@ def repl(game, console):
             game.quit()
             break
         elif op == 'b':
+            console.clear()
             console.showBonus()
         elif op == 'r':
+            console.clear()
             console.refresh()
+        elif op == 'w':
+            tokens = cmd.split(' ')
+
+            if len(tokens) == 4:
+                _, x, y, word = tokens
+                ori = 'h'
+            else:
+                _, x, y, word, ori = tokens
+
+            x, y = int(x), int(y)
+            game.putWord((x,y), word, ori)
 
 class ConsoleGameUI:
     def __init__(self):
@@ -44,7 +58,7 @@ class ConsoleGameUI:
     def refresh(self):
         board = self.game.board
         q = self.game.q
-        tty.clear()
+        # tty.clear()
         result = ' \ '
         rng = range(15)
         result = result + ' '. join( map(lambda x: strings.pad(x, 2), rng) ) + '\n'
@@ -83,7 +97,7 @@ class ConsoleGameUI:
         self.game.setupPlayer(name)
 
     def showBonus(self):
-        tty.clear()
+        # tty.clear()
         rng = range(15)
         board = self.game.board
         result = ' \ '
@@ -113,6 +127,8 @@ class ConsoleGameUI:
         print result
         print ''
         print '::bonus cells'
+    def clear(self):
+        tty.clear()
 
 
 
