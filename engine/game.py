@@ -125,12 +125,13 @@ class Game:
         # print 'run...'
         game = self
         rack = Rack(7)
-        player = Player(self.name, rack)
+        self.player = player = Player(self.name, rack)
         game.fillRack(player.rack)
 
         rack = Rack(7)
         ai = Ai(rack)
         ai.setup(game)
+        self.ai = ai
 
         humanRackSize = lambda: len(player.rack.tiles)
         aiRackSize = lambda: len(ai.rack.tiles)
@@ -139,7 +140,6 @@ class Game:
         humanRackEmpty = lambda: humanRackSize() == 0
         aiRackEmpty = lambda: aiRackSize() == 0
 
-        current = player
         passCount = 0
         round = 1
 
@@ -147,19 +147,61 @@ class Game:
 
         while True:
             round = round + 1
-
+            self.current = player
             self.trigger(Events.READY, self, round)
 
             if self.quit:
                 break
-
+            # self.current = ai
             # ai.play()
 
     def clear(self):
         self.q = {}
 
     def put(self, pos, letter):
-        self.q[pos] = letter
+        board = self.board
+        cell = board.getCell(pos)
+        if ordinate.ok(pos) and cell.hasTile() == False:
+            idx = self.current.rack.find(letter)
+            if idx == -1:
+                self.error = True
+                self.reason = 'letter not in rack: ' + letter
+            self.q[pos] = letter
+        else:
+            self.error = True
+            self.reason = 'cannot place tile at previously occupied cell: ' + str(pos)
 
     def putWord(self, pos, word, direction):
-        pass
+        board = self.board
+        if direction == 'h':
+            # increment y ordinate
+            y = pos[1]
+
+            counter = 0
+            length = len(word)
+            while counter < length:
+                ch = word[counter]
+                y = y + 1
+                loc = (pos[0], y)
+                while board.getCell(loc).hasTile():
+                    y = loc[1] = loc[1] + 1
+                self.put(loc, ch)
+                if self.error:
+                    break
+                counter = counter + 1
+        else:
+            # increment x ordinate
+            x = pos[0]
+
+            counter = 0
+            length = len(word)
+            while counter < length:
+                ch = word[counter]
+                x = x + 1
+                loc = (x, pos[1])
+                while board.getCell(loc).hasTile():
+                    x = loc[0] = loc[0] + 1
+                self.put(loc, ch)
+                if self.error:
+                    break
+                counter = counter + 1
