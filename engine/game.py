@@ -41,7 +41,7 @@ class Game:
         self.isFirstTurn = True
         self.sinks = []
         # self.status = Events.BUSY
-        self.quitFlag = False
+        self._quit = False
         self.played = False
         self.q = {}
         self.error = False
@@ -125,7 +125,7 @@ class Game:
         self.thread.join()
 
     def quit(self):
-        self.quit = True
+        self._quit = True
 
     def run(self):
         # print 'run...'
@@ -154,11 +154,15 @@ class Game:
             self.current = player
             self.trigger(Events.READY, self, round)
 
-            if self.quit:
+            if self._quit:
                 break
 
             if self.error:
                 self.trigger(Events.ERROR, self, self.reason)
+                round = round - 1
+                continue
+
+            if not self.played:
                 round = round - 1
                 continue
             # self.current = ai

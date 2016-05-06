@@ -40,6 +40,7 @@ def repl(game, console):
             x, y = int(x), int(y)
             game.putWord((x,y), word, ori)
             break
+            
 class ConsoleGameUI:
     def __init__(self):
         self.game = game = Game.getInstance();
