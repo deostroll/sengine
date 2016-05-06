@@ -11,6 +11,7 @@ class Events:
     READY = 0
     QUIT = 3
     ERROR = 4
+    PUT = 5
 
 def loadTiles():
     f = open('data/tiles.json')
@@ -165,6 +166,7 @@ class Game:
             if not self.played:
                 round = round - 1
                 continue
+
             # self.current = ai
             # ai.play()
 
@@ -185,7 +187,7 @@ class Game:
                 self.error = True
                 self.reason = 'letter not in rack: ' + letter
             tile = self.current.rack.tiles[idx]
-            self.current.rack.remove(tile)
+            self.current.rack.tiles.remove(tile)
             self.q[pos] = tile
         else:
             self.error = True
