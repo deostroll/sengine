@@ -4,7 +4,7 @@ from utils import strings, help, tty
 def repl(game, console):
 
     while True:
-        cmd = raw_input('Command (type h or help for help): ').lower()
+        cmd = raw_input('> Command (type h for help): ').lower()
 
         op = cmd[0]
 
@@ -48,6 +48,7 @@ class ConsoleGameUI:
     def onEvent(self, evt, *args):
         # print 'evt:'        , evt
         if evt == Events.READY:
+            self.clear()
             self.refresh()
             repl(self.game, self)
         elif evt == Events.ERROR:
@@ -61,6 +62,7 @@ class ConsoleGameUI:
         self.game.waitForExit()
 
     def refresh(self):
+        game = self.game
         board = self.game.board
         q = self.game.q
         # tty.clear()
@@ -95,6 +97,7 @@ class ConsoleGameUI:
 
         print result
         print ''
+        print 'Rack:', game.current.rack
         print '> board and rack printed...'
 
 

@@ -101,7 +101,7 @@ class Rack:
         self.tiles = []
 
     def __repr__(self):
-        return ''.join(map(lambda x: x.letter, self.tiles))
+        return ' '.join(map(lambda x: x.letter + '(' + str(x.score) + ')', self.tiles))
 
     def find(self, ch):
         res = -1

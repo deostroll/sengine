@@ -115,17 +115,17 @@ class Game:
         self.name = name
 
     def start(self):
-        self.evt = threading.Event()
+        # self.evt = threading.Event()
         t = threading.Thread(target=self.run)
         t.daemon = True
         t.start()
+        self.thread = t
 
     def waitForExit(self):
-        self.evt.wait()
+        self.thread.join()
 
     def quit(self):
-        self.quitFlag = True
-        self.evt.set()
+        self.quit = True
 
     def run(self):
         # print 'run...'
@@ -147,9 +147,7 @@ class Game:
         aiRackEmpty = lambda: aiRackSize() == 0
 
         passCount = 0
-        round = 1
-
-        canProceed = True
+        round = 0
 
         while True:
             round = round + 1
