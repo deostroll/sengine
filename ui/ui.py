@@ -17,8 +17,9 @@ def repl(game, console):
             break
         elif op == 'c':
             game.clear()
-            console.clear()
-            console.refresh()
+            # console.clear()
+            # console.refresh()
+
         elif op == 'q':
             game.quit()
             break
@@ -65,6 +66,11 @@ class ConsoleGameUI:
             elif opt == 'w':
                 _, __, pos, word, direction = args
                 print '> put word: ' + word + ' at position: ' + str(pos) + 'dir: ' + direction +  '...success...'
+
+        elif evt == Events.CLEAR:
+            self.clear()
+            self.refresh()
+            print '> game cleared...'
 
 
 

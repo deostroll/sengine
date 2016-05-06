@@ -12,6 +12,7 @@ class Events:
     QUIT = 3
     ERROR = 4
     PUT = 5
+    CLEAR = 6
 
 def loadTiles():
     f = open('data/tiles.json')
@@ -171,7 +172,11 @@ class Game:
             # ai.play()
 
     def clear(self):
+        tiles = self.q.values()
+        self.current.rack.tiles.extend(tiles)
         self.q = {}
+        self.trigger(Events.CLEAR)
+
 
     def put(self, pos, letter, _print=True):
         board = self.board
