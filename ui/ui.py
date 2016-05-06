@@ -69,7 +69,7 @@ class ConsoleGameUI:
 
         elif evt == Events.CLEAR:
             self.clear()
-            self.print()
+            self.printBoard()
             print '> game cleared...'
 
 
@@ -79,7 +79,7 @@ class ConsoleGameUI:
         self.game.start()
         self.game.waitForExit()
 
-    def print(self):
+    def printBoard(self):
         game = self.game
         board = self.game.board
         q = self.game.q
