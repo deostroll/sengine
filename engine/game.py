@@ -38,7 +38,7 @@ class Game:
     def __init__(self, board):
         self.board = board
         self.loadTiles()
-        self.isFirstTurn = True
+        # self.isFirstTurn = Trues
         self.sinks = []
         # self.status = Events.BUSY
         self._quit = False
