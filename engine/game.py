@@ -212,8 +212,8 @@ class Game:
             length = len(word)
             while counter < length:
                 ch = word[counter]
-                y = y + counter + skip
-                loc = (pos[0], y)
+                yn = y + counter + skip
+                loc = (pos[0], yn)
                 while board.getCell(loc).hasTile():
                     loc[1] + 1
                     skip = skip + 1
@@ -229,10 +229,11 @@ class Game:
             length = len(word)
             while counter < length:
                 ch = word[counter]
-                x = x + 1
-                loc = (x, pos[1])
+                xn = x + counter + skip
+                loc = (xn, pos[1])
                 while board.getCell(loc).hasTile():
-                    x = loc[0] = loc[0] + 1
+                    loc[0] = loc[0] + 1
+                    skip = skip + 1
                 self.put(loc, ch, False)
                 if self.error:
                     break
