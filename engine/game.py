@@ -196,6 +196,7 @@ class Game:
             if tile.isBlank() : tile.setSubstituteLetter(letter)
             self.current.rack.tiles.remove(tile)
             self.q[pos] = tile
+            self.trigger(Events.PUT, tile, pos)
         else:
             self.error = True
             self.reason = 'cannot place tile at previously occupied cell: ' + str(pos)

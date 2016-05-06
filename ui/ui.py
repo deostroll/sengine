@@ -40,7 +40,7 @@ def repl(game, console):
             x, y = int(x), int(y)
             game.putWord((x,y), word, ori)
             break
-            
+
 class ConsoleGameUI:
     def __init__(self):
         self.game = game = Game.getInstance();
@@ -56,6 +56,12 @@ class ConsoleGameUI:
             print '> Error: ', self.reason
             raw_input('> Press enter to continue...')
             self.game.resetError()
+        elif evt == Events.PUT:
+            # print args
+            _, tile, pos = args
+            self.clear()
+            self.refresh()
+
 
 
     def runloop(self):
@@ -73,8 +79,15 @@ class ConsoleGameUI:
         # _, c = getTerminalSize()
         # for x in range(c) : print ''
         def getCell(cell):
+            _2dpos = board._get2d(cell.id)
+
             if cell.hasTile():
                 return cell.letter
+            elif _2dpos in q.keys():
+                tile = q[_2dpos]
+                if tile.isBlank():
+                    return tile.sub_letter
+                return tile.letter
             elif cell.hasBonus():
                 bonus = cell.bonus
                 if bonus == 'TW' : ch =  '='
