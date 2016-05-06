@@ -184,9 +184,16 @@ class Game:
         if cell.hasTile() == False:
             idx = self.current.rack.find(letter)
             if idx == -1:
-                self.error = True
-                self.reason = 'letter not in rack: ' + letter
+
+                #check for blank
+                idx = self.current.rack.find('_')
+                if idx == -1:
+                    self.error = True
+                    self.reason = 'letter not in rack: ' + letter
+                    return
+
             tile = self.current.rack.tiles[idx]
+            if tile.isBlank() : tile.setSubstituteLetter(letter)
             self.current.rack.tiles.remove(tile)
             self.q[pos] = tile
         else:
