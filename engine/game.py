@@ -173,7 +173,7 @@ class Game:
     def clear(self):
         self.q = {}
 
-    def put(self, pos, letter):
+    def put(self, pos, letter, _print=True):
         board = self.board
         cell = board.getCell(pos)
         if not ordinate.ok(pos):
@@ -196,13 +196,14 @@ class Game:
             if tile.isBlank() : tile.setSubstituteLetter(letter)
             self.current.rack.tiles.remove(tile)
             self.q[pos] = tile
-            self.trigger(Events.PUT, tile, pos)
+            if _print : self.trigger(Events.PUT, 'p', pos, tile)
         else:
             self.error = True
             self.reason = 'cannot place tile at previously occupied cell: ' + str(pos)
 
     def putWord(self, pos, word, direction):
         board = self.board
+        skip = 0
         if direction == 'h':
             # increment y ordinate
             y = pos[1]
@@ -211,11 +212,12 @@ class Game:
             length = len(word)
             while counter < length:
                 ch = word[counter]
-                y = y + 1
+                y = y + counter + skip
                 loc = (pos[0], y)
                 while board.getCell(loc).hasTile():
-                    y = loc[1] = loc[1] + 1
-                self.put(loc, ch)
+                    loc[1] + 1
+                    skip = skip + 1
+                self.put(loc, ch, False)
                 if self.error:
                     break
                 counter = counter + 1
@@ -231,7 +233,8 @@ class Game:
                 loc = (x, pos[1])
                 while board.getCell(loc).hasTile():
                     x = loc[0] = loc[0] + 1
-                self.put(loc, ch)
+                self.put(loc, ch, False)
                 if self.error:
                     break
                 counter = counter + 1
+        self.trigger(Events.PUT, 'w', pos, word, direction)

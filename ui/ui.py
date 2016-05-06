@@ -58,9 +58,14 @@ class ConsoleGameUI:
             self.game.resetError()
         elif evt == Events.PUT:
             # print args
-            _, tile, pos = args
-            self.clear()
-            self.refresh()
+            opt = args[1]
+            if opt == 'p':
+                _, __, pos, tile = args
+                print '> put letter: ' + str(tile) + ' at position: ' + str(pos) + ' success...'
+            elif opt == 'w':
+                _, __, pos, word, direction = args
+                print '> put word: ' + word + ' at position: ' + str(pos) + 'dir: ' + direction +  '...success...'
+
 
 
 

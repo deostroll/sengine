@@ -84,7 +84,7 @@ class Tile:
         self.letter = letter
         self.score = score
     def __repr__(self):
-        return self.letter
+        return self.letter if not self.isBlank() else self.sub_letter + '`'
 
     def isBlank(self):
         return self.letter == '_'
