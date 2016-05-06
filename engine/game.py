@@ -174,12 +174,19 @@ class Game:
     def put(self, pos, letter):
         board = self.board
         cell = board.getCell(pos)
-        if ordinate.ok(pos) and cell.hasTile() == False:
+        if not ordinate.ok(pos):
+            self.error = True
+            self.reason = 'Invalid ordinate: ' + str(pos)
+            return
+
+        if cell.hasTile() == False:
             idx = self.current.rack.find(letter)
             if idx == -1:
                 self.error = True
                 self.reason = 'letter not in rack: ' + letter
-            self.q[pos] = letter
+            tile = self.current.rack.tiles[idx]
+            self.current.rack.remove(tile)
+            self.q[pos] = tile
         else:
             self.error = True
             self.reason = 'cannot place tile at previously occupied cell: ' + str(pos)
