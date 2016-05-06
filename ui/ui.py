@@ -18,7 +18,7 @@ def repl(game, console):
         elif op == 'c':
             game.clear()
             # console.clear()
-            # console.refresh()
+            # console.P()
 
         elif op == 'q':
             game.quit()
@@ -69,7 +69,7 @@ class ConsoleGameUI:
 
         elif evt == Events.CLEAR:
             self.clear()
-            self.refresh()
+            self.print()
             print '> game cleared...'
 
 
@@ -79,7 +79,7 @@ class ConsoleGameUI:
         self.game.start()
         self.game.waitForExit()
 
-    def refresh(self):
+    def print(self):
         game = self.game
         board = self.game.board
         q = self.game.q
