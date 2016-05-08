@@ -29,21 +29,56 @@ class WUF:
             self.id[q] = rp
             self.sz[rp] = self.sz[rp] + self.sz[rq] + 1
 
-def isValidSequence(seq):
+def check(seq):
     assert len(seq) > 1
 
-    # sorting with x-ordinate then y-ordinate
-    sortedSeq = sorted(seq, key=itemgetter(0,1))
-
-    xSame = sortedSeq[0][0] == sortedSeq[1][0]
-    dir = 'invalid'
-    if xSame:
-        test_val = sortedSeq[0][0]
-        res = all(map(lambda x: x[0] == test_val, sortedSeq))
-        dir = 'horizontal'
+    if ordinatesInRow(seq):
+        _, noGaps, gaps = gapCheck(seq)
+        if noGaps:
+            return True, True, True, None
+        else:
+            return True, True, False, gaps
+    elif ordinatesInColumn(seq):
+        _, noGaps, gaps = gapCheck(seq, False)
+        if noGaps:
+            return True, False, True, None
+        else:
+            return True, False, False, gaps
     else:
-        test_val = sortedSeq[0][1]
-        res = all(map(lambda x: x[1] == test_val,sortedSeq))
-        dir = 'vertical'
+        return False, None, None, None
 
-    return { 'result': res, 'direction': dir }
+def ordinatesInRow(seq):
+    test_val = seq[0][0]
+    return all( map(lambda x: x[0] == test_val, seq) )
+
+def ordinatesInColumn(seq):
+    test_val = seq[0][1]
+    return all( map(lambda x: x[1] == test_val, seq) )
+
+def gapCheck(seq, horizontal=True):
+    if horizontal:
+        selector = lambda x: x[1]
+        actualRange = sorted(map(selector, seq))
+        low, high = min(actualRange), max(actualRange)
+        expectedRange = range(low, high + 1)
+        if actualRange != expectedRange:
+            lengthHigh = len(expectedRange)
+            lengthLow = len(actualRange)
+            assert lengthLow < lengthHigh
+            missing = filter(lambda x: x not in actualRange, expectedRange)
+            return True, False, missing
+        else:
+            return (True, True, None)
+    else:
+        selector = lambda x: x[0]
+        actualRange = sorted(map(selector, seq))
+        low, high = min(actualRange), max(actualRange)
+        expectedRange = range(low, high + 1)
+        if actualRange != expectedRange:
+            lengthHigh = len(expectedRange)
+            lengthLow = len(actualRange)
+            assert lengthLow < lengthHigh
+            missing = filter(lambda x: x not in actualRange, expectedRange)
+            return False, False, missing
+        else:
+            return False, True, None
