@@ -36,6 +36,12 @@ class ConsoleGameUI:
             self.printBoard()
             print '> game cleared...'
 
+        elif evt == Events.COMPUTED:
+            print args
+            _, scoreOk, data, reason = args
+            if scoreOk:
+                print data
+
     def runloop(self):
         self.game.start()
         self.game.waitForExit()

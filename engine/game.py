@@ -1,9 +1,10 @@
 from core import Tile, Board, Player, Ai, Rack
 import json
 from random import randrange
-from ds import WUF, isValidSequence
+from ds import WUF, check
 import threading
 from utils import ordinate
+
 # import pdb
 
 
@@ -13,6 +14,7 @@ class Events:
     ERROR = 4
     PUT = 5
     CLEAR = 6
+    COMPUTED = 7
 
 def loadTiles():
     f = open('data/tiles.json')
@@ -244,6 +246,31 @@ class Game:
                     break
                 counter = counter + 1
         self.trigger(Events.PUT, 'w', pos, word, direction)
+        self.compute()
 
     def compute(self):
-        pass
+        queue = self._q
+        ordinates = queue.keys()
+        board = self.board
+        seq = queue.keys()
+        ok, isHorizontal, noGaps, gaps = check(ordinates)
+
+        if not ok:
+            self.trigger(Events.COMPUTED, False, None, 'Invalid Sequence')
+            return
+
+        if isHorizontal:
+            rowIndex = seq[0][0]
+
+            if noGaps:
+                tiles = queue.values()
+                if board.getCell((7,7)).hasTile():
+                    pass
+                else:
+                    if (7,7) in ordinates:
+                        self.trigger(Events.COMPUTED, True, tiles, None)
+                    else:
+                        self.trigger(Events.COMPUTED, False, None, 'First word must pass through (7, 7)')
+                return
+            else:
+                pass
