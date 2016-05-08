@@ -13,10 +13,12 @@ class ConsoleGameUI:
             self.clear()
             self.printBoard()
             repl(self.game, self)
+
         elif evt == Events.ERROR:
             print '> Error: ', self.reason
             raw_input('> Press enter to continue...')
             self.game.resetError()
+
         elif evt == Events.PUT:
             # print args
             self.clear()
@@ -34,9 +36,6 @@ class ConsoleGameUI:
             self.printBoard()
             print '> game cleared...'
 
-
-
-
     def runloop(self):
         self.game.start()
         self.game.waitForExit()
@@ -44,7 +43,7 @@ class ConsoleGameUI:
     def printBoard(self):
         game = self.game
         board = self.game.board
-        q = self.game.q
+        q = self.game._q
         # tty.clear()
         result = ' \ '
         rng = range(15)

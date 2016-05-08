@@ -45,7 +45,7 @@ class Game:
         # self.status = Events.BUSY
         self._quit = False
         self.played = False
-        self.q = {}
+        self._q = {}
         self.error = False
         self.reason = ''
 
@@ -172,11 +172,10 @@ class Game:
             # ai.play()
 
     def clear(self):
-        tiles = self.q.values()
+        tiles = self._q.values()
         self.current.rack.tiles.extend(tiles)
-        self.q = {}
+        self._q = {}
         self.trigger(Events.CLEAR)
-
 
     def put(self, pos, letter, _print=True):
         board = self.board
@@ -200,11 +199,12 @@ class Game:
             tile = self.current.rack.tiles[idx]
             if tile.isBlank() : tile.setSubstituteLetter(letter)
             self.current.rack.tiles.remove(tile)
-            self.q[pos] = tile
+            self._q[pos] = tile
             if _print : self.trigger(Events.PUT, 'p', pos, tile)
         else:
             self.error = True
             self.reason = 'cannot place tile at previously occupied cell: ' + str(pos)
+
 
     def putWord(self, pos, word, direction):
         board = self.board
@@ -244,3 +244,6 @@ class Game:
                     break
                 counter = counter + 1
         self.trigger(Events.PUT, 'w', pos, word, direction)
+
+    def compute(self):
+        pass
