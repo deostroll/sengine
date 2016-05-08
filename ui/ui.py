@@ -1,46 +1,6 @@
 from engine import Game, Events
 from utils import strings, help, tty
-
-def repl(game, console):
-
-    while True:
-        cmd = raw_input('> Command (type h for help): ').lower()
-
-        op = cmd[0]
-
-        if op == 'h':
-            print help.text
-        elif op == 'p':
-            _, x, y, l = cmd.split(' ')
-            x, y = int(x), int(y)
-            game.put((x,y), l)
-            break
-        elif op == 'c':
-            game.clear()
-            # console.clear()
-            # console.P()
-
-        elif op == 'q':
-            game.quit()
-            break
-        elif op == 'b':
-            console.clear()
-            console.showBonus()
-        elif op == 'r':
-            console.clear()
-            console.refresh()
-        elif op == 'w':
-            tokens = cmd.split(' ')
-
-            if len(tokens) == 4:
-                _, x, y, word = tokens
-                ori = 'h'
-            else:
-                _, x, y, word, ori = tokens
-
-            x, y = int(x), int(y)
-            game.putWord((x,y), word, ori)
-            break
+from repl import repl
 
 class ConsoleGameUI:
     def __init__(self):
@@ -51,7 +11,7 @@ class ConsoleGameUI:
         # print 'evt:'        , evt
         if evt == Events.READY:
             self.clear()
-            self.refresh()
+            self.printBoard()
             repl(self.game, self)
         elif evt == Events.ERROR:
             print '> Error: ', self.reason
@@ -59,13 +19,15 @@ class ConsoleGameUI:
             self.game.resetError()
         elif evt == Events.PUT:
             # print args
+            self.clear()
+            self.printBoard()
             opt = args[1]
             if opt == 'p':
                 _, __, pos, tile = args
                 print '> put letter: ' + str(tile) + ' at position: ' + str(pos) + ' success...'
             elif opt == 'w':
                 _, __, pos, word, direction = args
-                print '> put word: ' + word + ' at position: ' + str(pos) + 'dir: ' + direction +  '...success...'
+                print '> put word: ' + word + ' at position: ' + str(pos) + ' dir: ' + direction +  ' success...'
 
         elif evt == Events.CLEAR:
             self.clear()
