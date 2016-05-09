@@ -264,9 +264,33 @@ class Game:
 
             if noGaps:
                 tiles = queue.values()
+
+                # we are checking if its the first turn
+
                 if board.getCell((7,7)).hasTile():
-                    pass
+                    # !This is not first turn
+                    sortedOrdinates = sorted(ordinates, key=lambda x: x[1])
+                    rowIndex = sortedOrdinates[0][0]
+                    lastIndex = sortedOrdinates[-1][1] + 1
+                    while lastIndex < 15 and board.getCell((rowIndex, lastIndex)).hasTile():
+                        sortedOrdinates.append((rowIndex, lastIndex))
+                        lastIndex = lastIndex + 1
+                    def getTile(pos):
+                        res = True
+                        try:
+                            tile = queue[pos]
+                        except KeyError:
+                            tile = board.getCell(pos).tile
+                            res = False
+                        return tile, res
+
+                    # sortedTiles = map(lambda x: queue[x], sortedOrdinates)
+                    sortedTiles = map(getTile, sortedOrdinates)
+                    cellRange = map(lambda x: board.getCell(x), sortedOrdinates)
+                    score = 0
+
                 else:
+                    # !This is the first turn
                     if (7,7) in ordinates:
                         self.trigger(Events.COMPUTED, True, tiles, None)
                     else:
