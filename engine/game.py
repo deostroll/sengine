@@ -292,7 +292,23 @@ class Game:
                 else:
                     # !This is the first turn
                     if (7,7) in ordinates:
-                        self.trigger(Events.COMPUTED, True, tiles, None)
+                        score = 0
+                        for pos, tile in queue.iteritems():
+                            cell = board.getCell(pos)
+                            factor = 1
+                            if cell.hasBonus():
+                                if cell.bonus == 'TL':
+                                    factor = 3
+                                elif cell.bonus == 'DL':
+                                    factor = 2
+                                else:
+                                    factor = 1
+                            score = score + tile.score * factor
+                        score = score * 2 # since this is the first word
+                        word = reduce(lambda x, y: x + y[1].letter if not y[1].isBlank() else y.sub_letter,
+                            sorted(queue.iteritems(), key=lambda x: x[0][1]),
+                            '')
+                        self.trigger(Events.COMPUTED, True, (word, score), None)
                     else:
                         self.trigger(Events.COMPUTED, False, None, 'First word must pass through (7, 7)')
                 return
