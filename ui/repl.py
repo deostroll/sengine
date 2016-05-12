@@ -1,3 +1,5 @@
+from utils import help
+
 def repl(game, console):
 
     while True:
