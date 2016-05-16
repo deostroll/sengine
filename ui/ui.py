@@ -37,7 +37,7 @@ class ConsoleGameUI:
             print '> game cleared...'
 
         elif evt == Events.COMPUTED:
-            print args
+            # print args
             _, scoreOk, data, reason = args
             if scoreOk:
                 print data
